@@ -46,8 +46,8 @@ preguntar_comando comando oraculo = case comando of
         exitSuccess
 
     'Preguntar'-> do putStrLn "Introduzca un comando: "
-            comando <- getLine
-            preguntar_comando comando
+        comando <- getLine
+        preguntar_comando comando
     
     _ ->
         putStrLn "Comando Invalido" 
