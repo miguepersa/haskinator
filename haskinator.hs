@@ -1,10 +1,12 @@
-import (implicit) Prelude
-    ( ($), Show(show), IO, words, getLine, putStrLn )
 import Data.List ( intercalate )
-import qualified Oraculo as O
+import Data.Char ( toLower )
+import Oraculo
 import System.Exit (exitSuccess)
+import System.IO  
+import Data.Map (Map, fromList) 
 
 predecir :: Oraculo -> IO Oraculo
+
 
 persistir :: Oraculo -> IO ()
 
@@ -12,48 +14,45 @@ cargar :: IO Oraculo
 
 consultar :: Oraculo -> IO ()
 
-preguntar_comando :: Maybe Oraculo -> IO()
-preguntar_comando comando oraculo = case comando of
+preguntarComando :: Maybe Oraculo -> IO()
+preguntarComando comando oraculo = case map toLower comando of
     
-    'Crear' -> do
+    "crear" -> do
         putStrLn "Ingrese una prediccion: "
         prediccion <- getLine
         putStrLn "El nuevo oráculo ha sido creado.\n"
         crearOraculo prediccion
         preguntar_comando "Preguntar"
 
-    'Predecir' -> do
-        {-
-        some
-        -}
-
-    'Persistir' -> do
+    "predecir" -> do
+        
+    "persistir" -> do
         putStrLn "Ingrese el nombre del archivo a escribir: "
         archivo <- getLine
         writeFile archivo (show oraculo)
 
-    'Cargar' -> do
+    "cargar" -> do
         putStrLn "Ingrese el nombre del archivo a leer: "
         archivo <- getLine
         oraculo <- readFile archivo
-        parseOraculo oraculo
+        crearOraculo oraculo
 
-    'Consultar' -> do
+    "consultar" -> do
 
-    'Estadisticas' -> do
+    "estadisticas" -> do
 
-    'Salir' -> do
+    "salir" -> do
         exitSuccess
 
-    'Preguntar'-> do putStrLn "Introduzca un comando: "
-        comando <- getLine
-        preguntar_comando comando
-    
-    _ ->
-        putStrLn "Comando Invalido" 
+    "preguntar"-> do 
         putStrLn "Introduzca un comando: "
         comando <- getLine
-        preguntar_comando comando
+        preguntarComando comando
+    
+    _ -> do
+        putStrLn "Introduzca un comando: "
+        new_comando <- getLine
+        preguntarComando comando
     
 
 
@@ -65,5 +64,5 @@ main' = do
     putStrLn "Bienvenido a Haskinator!"    
     putStrLn "Introduzca un comando: "
     comando <- getLine
-    preguntar_comando comando
+    preguntarComando comando
 
