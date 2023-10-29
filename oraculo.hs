@@ -28,14 +28,16 @@ ramificar opciones oraculos pregunta =
 prediccion :: Oraculo -> String
 prediccion (Pregunta _ _) = error "No puede obtener la predicción de una pregunta"
 prediccion (Prediccion pre) = pre
+prediccion _ = error "El oraculo no es una prediccion"
 
 pregunta :: Oraculo -> String
-opciones (Pregunta _ opciones) = opciones
-opciones (Prediccion _) = Map.empty
+pregunta (Pregunta x _) = x
+pregunta _ = error "El oraculo no es una pregunta"
 
 opciones :: Oraculo -> Opciones
-opciones (Pregunta _ opciones) = opciones
+opciones (Pregunta _ op) = op
 opciones (Prediccion _) = Map.empty
+opciones _ = error "El oraculo no es una pregunta"
 
 respuesta :: Oraculo -> String -> Oraculo
 respuesta oraculo opcion =
