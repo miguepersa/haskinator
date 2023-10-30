@@ -1,0 +1,1 @@
+Pregunta "Es un lenguaje de programacion?" (fromList [("No",Prediccion "HTML"),("Si",Pregunta "A que paradigma pertenece?" (fromList [("Funcional",Prediccion "Haskell"),("Imperativo",Pregunta "A quien pertenece el lenguaje?" (fromList [("Microsoft",Prediccion "C#"),("Oracle",Prediccion "Java")])),("Logico",Prediccion "Prolog")]))])
