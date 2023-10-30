@@ -134,7 +134,7 @@ crearPrediccion = do
 estadisticas:: Oraculo -> IO()
 -- Se verifica si es una prediccion "vacia" (Oraculo vacio), en caso de no serlo, se obtienen las estadisticas
 estadisticas (Prediccion p) =
-    if p == "" then do putStrLn "Oraculo Vacio" else print (obtenerEstadisticas (Prediccion p))
+    if p == "" then do putStrLn "\nError: Oraculo vacio. Cree uno antes de predecir\n" else print (obtenerEstadisticas (Prediccion p))
 estadisticas (Pregunta p opc) = print $ obtenerEstadisticas (Pregunta p opc)
 
 cicloMain :: Oraculo -> IO()

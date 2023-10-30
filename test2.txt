@@ -1,0 +1,15 @@
+Pregunta "Es un lenguaje de programación?" (fromList [
+  ("Si", Pregunta "A qué paradigma pertenece?" (fromList [
+    ("Imperativo", Pregunta "A quién pertenece el lenguaje?" (fromList [
+      ("Oracle", Prediccion "Java"),
+      ("Microsoft", Prediccion "C#"),
+      ("Google", Prediccion "Go")
+    ])),
+    ("Funcional", Prediccion "Haskell"),
+    ("Lógico", Prediccion "Prolog")
+  ])),
+  ("No", Pregunta "Qué tipo de lenguaje es?" (fromList [
+    ("De marcado", Prediccion "HTML"),
+    ("De definición de estilo", Prediccion "CSS")
+  ]))
+])
