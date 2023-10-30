@@ -66,6 +66,51 @@ persistir :: Oraculo -> IO ()
 cargar :: IO Oraculo
 
 consultar :: Oraculo -> IO ()
+consultar oraculo = do
+    putStrLn "Prediccion 1: "
+    t1 <- getLine
+    putStrLn "Prediccion 2: "
+    t2 <- getLine
+    let p1 = crearOraculo t1
+    let p2 = crearOraculo t2
+
+    if (esAncestro p1 p2 oraculo && t1 != t1) then
+        imprimirCrucial (getOpciones (ancestroComun p1 p2 oraculo) p1 p2) t1 t2
+
+    else
+        predNoExiste (predExiste p1 oraculo) (predExiste pp2 oraculo) t1 t2
+
+imprimirCrucial :: (Oraculo, String, String) -> String -> String -> IO ()
+imprimirCrucial (preg, o1, o2) p1 p2 = do
+putStrLn $ "\nPregunta Crucial: " ++ pregunta preg
+putStrLn $ "Opción para " ++ p1 ++ ": " ++ o1
+putStrLn $ "Opción para " ++ p2 ++ ": " ++ o2
+
+getOpciones :: Oraculo -> Oraculo -> Oraculo -> (Oraculo, String, String)
+getOpciones preg p1 p2 = (preg, foldl hallar_p1 "" hijos, foldl hallar_p2 "" hijos)
+    where hallar_p1 acc (op, orac) = if predExiste p1 orac then op else acc
+        hallar_p2 acc (op, orac) = if predExiste p2 orac then op else acc
+        hijos = Map.toList (opciones preg)
+
+ancestroComun :: Oraculo -> Oraculo -> Oraculo -> Oraculo  
+ancestroComun p1 p2 oraculo = ancestroComunAux p1 p2 oraculo
+
+ancestroComunAux :: Oraculo -> Oraculo -> Oraculo -> Oraculo
+ancestroComunAux p1 p2 root = foldl (\acc (_, orac) -> if (esAncestro p1 p2 orac) then ancestroComunAux p1 p2 orac else acc) root hijos
+where hijos = Map.toList (opciones root)
+
+esAncestro :: Oraculo -> Oraculo -> Oraculo -> Bool
+esAncestro p1 p2 oraculo = predExiste p1 oraculo && predExiste p2 oraculo
+
+predNoExiste :: Bool -> Bool -> String -> String -> IO ()
+predNoExiste True False p1 p2 = putStrLn $ "\"" ++ p2 ++ "\" NO es válida."
+predNoExiste False True p1 p2 = putStrLn $ "\"" ++ p1 ++ "\" NO es válida."
+predNoExiste False False p1 p2 = putStrLn $ "\"" ++ p1 ++ "\" y \"" ++ p2  ++ "\" NO son válidas."
+
+predExiste :: Oraculo -> Oraculo -> Bool
+predExiste pred (Prediccion txt) = txt == prediccion pred
+predExiste pred (Pregunta _ ops) = foldl (\acc (_, orac) -> predExiste pred orac || acc) False lista
+where lista = Map.toList ops`
 
 preguntarComando :: Maybe Oraculo -> IO()
 preguntarComando comando oraculo = case map toLower comando of
