@@ -87,9 +87,9 @@ putStrLn $ "Opción para " ++ p1 ++ ": " ++ o1
 putStrLn $ "Opción para " ++ p2 ++ ": " ++ o2
 
 getOpciones :: Oraculo -> Oraculo -> Oraculo -> (Oraculo, String, String)
-getOpciones preg p1 p2 = (preg, foldl hallar_p1 "" hijos, foldl hallar_p2 "" hijos)
-    where hallar_p1 acc (op, orac) = if predExiste p1 orac then op else acc
-        hallar_p2 acc (op, orac) = if predExiste p2 orac then op else acc
+getOpciones preg p1 p2 = (preg, foldl h1 "" hijos, foldl h2 "" hijos)
+    where h1 acc (op, orac) = if predExiste p1 orac then op else acc
+        h2 acc (op, orac) = if predExiste p2 orac then op else acc
         hijos = Map.toList (opciones preg)
 
 ancestroComun :: Oraculo -> Oraculo -> Oraculo -> Oraculo  
