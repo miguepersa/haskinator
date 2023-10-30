@@ -2,7 +2,7 @@ import Data.List ( intercalate )
 import Data.Char ( toLower )
 import Oraculo
 import System.Exit (exitSuccess)
-import System.IO  
+import System.IO
 import qualified Data.Map as Map
 
 predecir :: Oraculo -> IO Oraculo
@@ -11,7 +11,7 @@ predecir (Prediccion p) = do
     if p == "" then do
         putStrLn "\nError: Oraculo vacio. Cree uno antes de predecir\n"
         return (Prediccion p)
-    
+
     else do
         putStrLn $ "Prediccion: " ++ p
         putStrLn "Si/No"
@@ -48,7 +48,7 @@ procesarPregunta oraculo = do
     ans <- getLine
 
     case map toLower ans of
-        "ninguna" -> do 
+        "ninguna" -> do
             putStrLn "xd"
             return oraculo
         _ ->
@@ -85,12 +85,12 @@ imprimirCrucial (preg, o1, o2) p1 p2 = do
     putStrLn $ "Opción para " ++ p2 ++ ": " ++ o2
 
 getOpciones :: Oraculo -> Oraculo -> Oraculo -> (Oraculo, String, String)
-getOpciones preg p1 p2 = (preg, foldl hallar_p1 "" hijos, foldl hallar_p2 "" hijos) where 
+getOpciones preg p1 p2 = (preg, foldl hallar_p1 "" hijos, foldl hallar_p2 "" hijos) where
     hallar_p1 acc (op, orac) = if predExiste p1 orac then op else acc
     hallar_p2 acc (op, orac) = if predExiste p2 orac then op else acc
     hijos = Map.toList (opciones preg)
 
-ancestroComun :: Oraculo -> Oraculo -> Oraculo -> Oraculo  
+ancestroComun :: Oraculo -> Oraculo -> Oraculo -> Oraculo
 ancestroComun p1 p2 oraculo = ancestroComunAux p1 p2 oraculo
 
 ancestroComunAux :: Oraculo -> Oraculo -> Oraculo -> Oraculo
@@ -129,7 +129,13 @@ crearPrediccion :: IO ()
 crearPrediccion = do
     putStrLn "Ingrese el texto de la predicción:"
     pred <- getLine
-    cicloMain (crearOraculo pred) 
+    cicloMain (crearOraculo pred)
+
+estadisticas:: Oraculo -> IO()
+-- Se verifica si es una prediccion "vacia" (Oraculo vacio), en caso de no serlo, se obtienen las estadisticas
+estadisticas (Prediccion p) =
+    if p == "" then do putStrLn "Oraculo Vacio" else print (obtenerEstadisticas (Prediccion p))
+estadisticas (Pregunta p opc) = print $ obtenerEstadisticas (Pregunta p opc)
 
 cicloMain :: Oraculo -> IO()
 cicloMain oraculo = do
@@ -140,11 +146,12 @@ cicloMain oraculo = do
     putStrLn "- Persistir (-Cargue un oraculo a un archivo-)"
     putStrLn "- Cargar (-Extraiga un oraculo de una archivo-)"
     putStrLn "- Consultar (-Consulta algo xddxxd-)"
+    putStrLn "- Estadisticas (- Obtener estadisticas xddxxd-)"
     putStrLn "- Salir\n"
 
     opcion <- getLine
     case opcion of
-    
+
         "Crear" -> do
             crearPrediccion
 
@@ -154,7 +161,7 @@ cicloMain oraculo = do
 
         "Persistir" -> do
             persistir oraculo
-            
+
 
         "Cargar" -> do
             oraculoCargado <- cargar
@@ -165,19 +172,20 @@ cicloMain oraculo = do
 
 
         "Estadisticas" -> do
+            estadisticas oraculo
             cicloMain oraculo
 
         "Salir" -> do
             exitSuccess
-        
+
         _ -> do
             putStrLn "Comando invalido. "
             cicloMain oraculo
-    
+
 -- Función principal
 main :: IO ()
 main = do
     -- Solicita al usuario que ingrese un comando
-    putStrLn "Bienvenido a Haskinator!"    
+    putStrLn "Bienvenido a Haskinator!"
     cicloMain $ crearOraculo ""
 
