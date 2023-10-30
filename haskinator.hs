@@ -4,6 +4,7 @@ import Oraculo
 import System.Exit (exitSuccess)
 import System.IO
 import qualified Data.Map as Map
+import Text.Printf (printf)
 
 predecir :: Oraculo -> IO Oraculo
 predecir (Pregunta p opt) = procesarPregunta (Pregunta p opt)
@@ -131,11 +132,16 @@ crearPrediccion = do
     pred <- getLine
     cicloMain (crearOraculo pred)
 
-estadisticas:: Oraculo -> IO()
--- Se verifica si es una prediccion "vacia" (Oraculo vacio), en caso de no serlo, se obtienen las estadisticas
-estadisticas (Prediccion p) =
-    if p == "" then do putStrLn "\nError: Oraculo vacio. Cree uno antes de predecir\n" else print (obtenerEstadisticas (Prediccion p))
-estadisticas (Pregunta p opc) = print $ obtenerEstadisticas (Pregunta p opc)
+estadisticas :: Oraculo -> IO ()
+estadisticas (Prediccion "") = putStrLn "\nError: Oraculo vacio. Cree uno antes de predecir\n"
+estadisticas oraculo = do
+    let (minAltura, maxAltura, avgAltura) = obtenerEstadisticas oraculo
+    putStrLn $ "Mínima profundidad: " ++ show minAltura
+    putStrLn $ "Máxima profundidad: " ++ show maxAltura
+    putStrLn $ "Promedio de profundidad: " ++ formatFloat avgAltura
+
+formatFloat :: Double -> String
+formatFloat = printf "%.4f"
 
 cicloMain :: Oraculo -> IO()
 cicloMain oraculo = do
