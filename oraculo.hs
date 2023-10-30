@@ -25,7 +25,7 @@ module Oraculo(
 
     prediccion :: Oraculo -> String
     prediccion (Pregunta _ _) = error "No puede obtener la predicción de una pregunta"
-    prediccion (Prediccion pre) = pre
+    prediccion (Prediccion p) = p
 
     pregunta :: Oraculo -> String
     pregunta (Pregunta txt _) = txt
