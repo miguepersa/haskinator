@@ -30,13 +30,13 @@ predecir (Prediccion p) = do
                 putStrLn $ "¿Qué pregunta distingue a \"" ++ ansCorr ++ "\" de las otras opciones?"
                 preg <- getLine
 
-                putStrLn $ "¿Cuál es la respuesta a \"" ++ preg ++ "\" para \"" ++ ans ++"\"?"
+                putStrLn $ "¿Cuál es la respuesta a \"" ++ preg ++ "\" para \"" ++ ansCorr ++"\"?"
                 opcion1 <- getLine
 
                 putStrLn $ "¿Cuál es la respuesta a \"" ++ preg ++ "\" para \"" ++ p ++"\"?"
                 opcion2 <- getLine
 
-                return (ramificar [opcion1, opcion2] [crearOraculo ans, (Prediccion p)] preg)
+                return (ramificar [opcion1, opcion2] [crearOraculo ansCorr, (Prediccion p)] preg)
             _    -> do -- Respuesta no válida
                 putStrLn "Error en respuesta. Intente nuevamente."
                 predecir (Prediccion p)
@@ -149,7 +149,8 @@ cicloMain oraculo = do
             crearPrediccion
 
         "Predecir" -> do
-            cicloMain oraculo
+            nuevoOraculo <- predecir oraculo
+            cicloMain nuevoOraculo
 
         "Persistir" -> do
             persistir oraculo

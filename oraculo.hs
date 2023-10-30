@@ -17,7 +17,7 @@ module Oraculo(
         deriving(Eq, Show, Read)
 
     crearOraculo :: String -> Oraculo
-    crearOraculo a = Prediccion a
+    crearOraculo = Prediccion
 
     ramificar :: [String] -> [Oraculo] -> String -> Oraculo
     ramificar opciones oraculos pregunta = Pregunta pregunta $ fromList $ zip opciones oraculos
