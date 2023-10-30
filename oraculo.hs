@@ -8,24 +8,23 @@ module Oraculo(
    -- obtenerCadena,
    -- obtenerEstadisticas,
     Opciones,
-    Oraculo(..)
-) where
+    Oraculo(..)) where
 
-    import qualified Data.Map as Map
-    import Data.Map (fromList )
+    import Data.Map (Map, fromList, (!))
 
-    type Opciones = Map.Map String Oraculo
-    data Oraculo = Prediccion String | Pregunta String Opciones deriving(Eq, Show, Read)
+    type Opciones = Map String Oraculo
+    data Oraculo = Prediccion String | Pregunta String Opciones 
+        deriving(Eq, Show, Read)
 
     crearOraculo :: String -> Oraculo
-    crearOraculo = Prediccion 
+    crearOraculo a = Prediccion a
 
     ramificar :: [String] -> [Oraculo] -> String -> Oraculo
     ramificar opciones oraculos pregunta = Pregunta pregunta $ fromList $ zip opciones oraculos
 
     prediccion :: Oraculo -> String
     prediccion (Pregunta _ _) = error "No puede obtener la predicción de una pregunta"
-    prediccion (Prediccion p) = p
+    prediccion (Prediccion pre) = pre
 
     pregunta :: Oraculo -> String
     pregunta (Pregunta txt _) = txt
@@ -38,7 +37,7 @@ module Oraculo(
     respuesta :: Oraculo -> String -> Oraculo
     respuesta oraculo opcion =
         case oraculo of
-        Pregunta _ opciones -> opciones Map.! opcion
+        Pregunta _ opciones -> opciones Data.Map.! opcion
         Prediccion _ -> error "No puede responder a una predicción"
 
     --obtenerCadena :: Oraculo -> String -> Maybe [(String, String)]

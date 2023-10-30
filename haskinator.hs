@@ -3,34 +3,17 @@ import Data.Char ( toLower )
 import Oraculo
 import System.Exit (exitSuccess)
 import System.IO  
-import Data.Map (Map, fromList) 
+import qualified Data.Map as Map
 
 predecir :: Oraculo -> IO Oraculo
-predecir (Pregunta p op) = do
-    putStrLn p
-    putStrLn $ intercalate " - " (Map.keys op) ++ " - ninguna"
-    ans <- getLine
-
-    case map toLower ans of
-        "ninguna" -> do 
-            putStrLn "xd"
-
-        _ ->
-            if ans `Map.member` op (Pregunta p op) then do
-                arb <- predecir (respuesta (Pregunta p op) ans)
-                return (addOp (Pregunta p op) arb ans)
-
-            else do
-                putStrLn "\nRespuesta invalida\nIntente nuevamente\n"
-                predecir (Pregunta p op)
-
+predecir (Pregunta p opt) = procesarPregunta (Pregunta p opt)
 predecir (Prediccion p) = do
     if p == "" then do
         putStrLn "\nError: Oraculo vacio. Cree uno antes de predecir\n"
         return (Prediccion p)
     
     else do
-        putStrLn "Prediccion: " ++ p
+        putStrLn $ "Prediccion: " ++ p
         putStrLn "Si/No"
         ans <- getLine
         case map toLower ans of
@@ -47,23 +30,39 @@ predecir (Prediccion p) = do
                 putStrLn $ "¿Qué pregunta distingue a \"" ++ ansCorr ++ "\" de las otras opciones?"
                 preg <- getLine
 
-                putStrLn $ "¿Cuál es la respuesta a \"" ++ preg ++ "\" para \"" ++ respCorrc ++"\"?"
+                putStrLn $ "¿Cuál es la respuesta a \"" ++ preg ++ "\" para \"" ++ ans ++"\"?"
                 opcion1 <- getLine
 
-                putStrLn $ "¿Cuál es la respuesta a \"" ++ pregDist ++ "\" para \"" ++ p ++"\"?"
+                putStrLn $ "¿Cuál es la respuesta a \"" ++ preg ++ "\" para \"" ++ p ++"\"?"
                 opcion2 <- getLine
 
-                return (ramificar [opcCorrc, opcOrac] [crearOraculo respCorrc, oraculo] pregDist)
+                return (ramificar [opcion1, opcion2] [crearOraculo ans, (Prediccion p)] preg)
             _    -> do -- Respuesta no válida
                 putStrLn "Error en respuesta. Intente nuevamente."
-                predecirPred oraculo
+                predecir (Prediccion p)
+
+procesarPregunta:: Oraculo -> IO Oraculo
+procesarPregunta oraculo = do
+    putStrLn $ "Pregunta: " ++ pregunta oraculo
+    putStrLn $ intercalate " - " (Map.keys (opciones oraculo)) ++ " - ninguna"
+    ans <- getLine
+
+    case map toLower ans of
+        "ninguna" -> do 
+            putStrLn "xd"
+            return oraculo
+        _ ->
+            if ans `Map.member` (opciones oraculo) then do
+                arb <- predecir (respuesta oraculo ans)
+                return (addOp oraculo arb ans)
+
+            else do
+                putStrLn "\nRespuesta invalida\nIntente nuevamente\n"
+                predecir oraculo
 
 addOp :: Oraculo -> Oraculo -> String -> Oraculo
 addOp (Pregunta t op) pred opp = Pregunta t (Map.insert opp pred op)
 
-persistir :: Oraculo -> IO ()
-
-cargar :: IO Oraculo
 
 consultar :: Oraculo -> IO ()
 consultar oraculo = do
@@ -74,11 +73,10 @@ consultar oraculo = do
     let p1 = crearOraculo t1
     let p2 = crearOraculo t2
 
-    if (esAncestro p1 p2 oraculo && t1 != t1) then
+    if esAncestro p1 p2 oraculo && t1 /= t1 then
         imprimirCrucial (getOpciones (ancestroComun p1 p2 oraculo) p1 p2) t1 t2
-
     else
-        predNoExiste (predExiste p1 oraculo) (predExiste pp2 oraculo) t1 t2
+        predNoExiste (predExiste p1 oraculo) (predExiste p2 oraculo) t1 t2
 
 imprimirCrucial :: (Oraculo, String, String) -> String -> String -> IO ()
 imprimirCrucial (preg, o1, o2) p1 p2 = do
@@ -110,55 +108,75 @@ predExiste :: Oraculo -> Oraculo -> Bool
 predExiste pred (Prediccion txt) = txt == prediccion pred
 predExiste pred (Pregunta _ ops) = foldl (\acc (_, orac) -> predExiste pred orac || acc) False lista where lista = Map.toList ops
 
-preguntarComando :: Maybe Oraculo -> IO()
-preguntarComando comando oraculo = case map toLower comando of
-    
-    "crear" -> do
-        putStrLn "Ingrese una prediccion: "
-        prediccion <- getLine
-        putStrLn "El nuevo oráculo ha sido creado.\n"
-        crearOraculo prediccion
-        preguntar_comando "Preguntar"
+persistir :: Oraculo -> IO ()
+persistir oraculo = do
+    putStrLn "Ingrese el nombre del archivo a escribir: "
+    archivo <- getLine
+    writeFile archivo (show oraculo)
+    cicloMain oraculo
 
-    "predecir" -> do
+cargar :: IO Oraculo
+cargar  = do
+    putStrLn "Ingrese el nombre del archivo a leer: "
+    archivo <- getLine
+    read_oraculo <- readFile archivo
+    putStrLn "\n--- Oraculo Cargado ---"
+    return (read read_oraculo :: Oraculo)
+
+-- consultar :: Oraculo -> IO ()
+
+crearPrediccion :: IO ()
+crearPrediccion = do
+    putStrLn "Ingrese el texto de la predicción:"
+    pred <- getLine
+    cicloMain (crearOraculo pred) 
+
+cicloMain :: Oraculo -> IO()
+cicloMain oraculo = do
+
+    putStrLn "\nEscriba una de las opciones disponibles: \n"
+    putStrLn "- Crear (-Crea un oraculo a partir de una prediccion-)"
+    putStrLn "- Predecir (-Predice lmao-) "
+    putStrLn "- Persistir (-Cargue un oraculo a un archivo-)"
+    putStrLn "- Cargar (-Extraiga un oraculo de una archivo-)"
+    putStrLn "- Consultar (-Consulta algo xddxxd-)"
+    putStrLn "- Salir\n"
+
+    opcion <- getLine
+    case opcion of
+    
+        "Crear" -> do
+            crearPrediccion
+
+        "Predecir" -> do
+            cicloMain oraculo
+
+        "Persistir" -> do
+            persistir oraculo
+            
+
+        "Cargar" -> do
+            oraculoCargado <- cargar
+            cicloMain oraculoCargado
+
+        "Consultar" -> do
+            cicloMain oraculo
+
+
+        "Estadisticas" -> do
+            cicloMain oraculo
+
+        "Salir" -> do
+            exitSuccess
         
-    "persistir" -> do
-        putStrLn "Ingrese el nombre del archivo a escribir: "
-        archivo <- getLine
-        writeFile archivo (show oraculo)
-
-    "cargar" -> do
-        putStrLn "Ingrese el nombre del archivo a leer: "
-        archivo <- getLine
-        oraculo <- readFile archivo
-        crearOraculo oraculo
-
-    "consultar" -> do
-
-    "estadisticas" -> do
-
-    "salir" -> do
-        exitSuccess
-
-    "preguntar"-> do 
-        putStrLn "Introduzca un comando: "
-        comando <- getLine
-        preguntarComando comando
+        _ -> do
+            putStrLn "Comando invalido. "
+            cicloMain oraculo
     
-    _ -> do
-        putStrLn "Introduzca un comando: "
-        new_comando <- getLine
-        preguntarComando comando
-    
-
-
-
 -- Función principal
-main' :: IO ()
-main' = do
+main :: IO ()
+main = do
     -- Solicita al usuario que ingrese un comando
     putStrLn "Bienvenido a Haskinator!"    
-    putStrLn "Introduzca un comando: "
-    comando <- getLine
-    preguntarComando comando
+    cicloMain $ crearOraculo ""
 
