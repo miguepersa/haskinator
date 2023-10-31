@@ -7,4 +7,4 @@ haskinator:
 	rm -rf *.o *.hi
 
 clean:
-	rm -rf *.o *.hi *.exe
+	rm -rf *.o *.hi *.exe haskinator
