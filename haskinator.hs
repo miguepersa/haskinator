@@ -89,7 +89,7 @@ consultar oraculo = do
     t2 <- getLine
     let p1 = crearOraculo t1
     let p2 = crearOraculo t2
-    if esAncestro p1 p2 oraculo && t1 /= t1 then
+    if esAncestro p1 p2 oraculo && t1 /= t2 then
         imprimirCrucial (getOpciones (ancestroComun p1 p2 oraculo) p1 p2) t1 t2
     else
         predNoExiste (predExiste p1 oraculo) (predExiste p2 oraculo) t1 t2
