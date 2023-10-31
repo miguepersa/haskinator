@@ -103,9 +103,9 @@ consultar oraculo = do
 --   - No tiene un valor de retorno, imprime la pregunta crucial y las opciones.
 imprimirCrucial :: (Oraculo, String, String) -> String -> String -> IO ()
 imprimirCrucial (preg, o1, o2) p1 p2 = do
-    putStrLn $ "Pregunta Crucial: " ++ pregunta preg
-    putStrLn $ "Opción para " ++ p1 ++ ": " ++ o1
-    putStrLn $ "Opción para " ++ p2 ++ ": " ++ o2
+    putStrLn $ "Pregunta: \'" ++ pregunta preg ++ "\'"
+    putStrLn $ "La opcion \'" ++ p1 ++ "\' lleva a \'" ++ o1 ++ "\'"
+    putStrLn $ "La opcion \'" ++ p2 ++ "\' lleva a \'" ++ o2 ++ "\'"
 
 -- Obtiene las opciones para las predicciones p1 y p2 en el Oráculo dado.
 -- Argumentos de entrada:
