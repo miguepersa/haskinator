@@ -52,3 +52,9 @@ Esto iniciará la aplicación y te permitirá realizar las siguientes acciones:
 - Miguel Perez (15-11126)
 - Jose Perez (16-10882)
 - Gabriel Chaurio (17-10126)
+
+## Consideraciones
+
+- Si se va a cargar un archivo o una cadena, el formato debe ser el mismo que el presentado en el archivo test.txt o test2.txt, pues esta es la unica manera implementada para la lectura de oraculos.
+- A la hora de predecir, es necesario escribir las opciones exactamente como son mostradas en pantallas, con Mayusculas de ser necesario, puesto que Haskinator no reconocera un input distinto al que esta guardado. Esto mismo sucede con Consultar.
+- Al seleccionar una accion, debe escribirse con su respectiva mayuscula al inicio.
