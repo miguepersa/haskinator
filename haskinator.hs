@@ -202,9 +202,7 @@ estadisticas :: Oraculo -> IO ()
 estadisticas (Prediccion "") = putStrLn "\nError: Oráculo vacío. Cree uno antes de predecir\n"
 estadisticas oraculo = do
     let (minAltura, maxAltura, avgAltura) = obtenerEstadisticas oraculo
-    putStrLn $ "Mínima profundidad: " ++ show minAltura
-    putStrLn $ "Máxima profundidad: " ++ show maxAltura
-    putStrLn $ "Promedio de profundidad: " ++ formatFloat avgAltura
+    putStrLn $ "\nmin: " ++ show minAltura ++ " max: " ++ show maxAltura ++ " avg: " ++ formatFloat avgAltura
 
 -- Formatea un número de punto flotante con un número específico de decimales.
 -- Argumentos de entrada:
