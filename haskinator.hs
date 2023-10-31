@@ -5,6 +5,7 @@ import System.Exit (exitSuccess)
 import System.IO
 import qualified Data.Map as Map
 import Text.Printf (printf)
+import Control.Exception
 
 -- Predice usando un Oráculo.
 -- Argumentos de entrada:
@@ -176,13 +177,17 @@ persistir oraculo = do
 -- Valor de retorno:
 --   - Retorna el Oráculo leído desde el archivo.
 cargar :: IO Oraculo
-cargar  = do
+cargar = do
     putStrLn "Ingrese el nombre del archivo a leer: "
     archivo <- getLine
-    read_oraculo <- readFile archivo
-    putStrLn "\n--- Oráculo Cargado ---"
-    return (read read_oraculo :: Oraculo)
-
+    result <- try (readFile archivo) :: IO (Either SomeException String)
+    case result of
+        Left ex -> do
+            putStrLn $ "Error: Archivo no existe en el directorio indicado"
+            return (crearOraculo "") -- Otra acción que desees realizar en caso de error
+        Right read_oraculo -> do
+            putStrLn "\n--- Oráculo Cargado ---"
+            return (read read_oraculo :: Oraculo)
 -- Crea una predicción a partir del texto ingresado por el usuario.
 -- No tiene argumentos de entrada.
 -- Valor de retorno:
