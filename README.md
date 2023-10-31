@@ -49,6 +49,6 @@ Esto iniciará la aplicación y te permitirá realizar las siguientes acciones:
 
 ## Integrantes
 
-Gabriel Chaurio ()
-Miguel Perez ()
-Jose Perez (16-10882)
+- Gabriel Chaurio ()
+- Miguel Perez ()
+- Jose Perez (16-10882)
