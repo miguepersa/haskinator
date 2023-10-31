@@ -12,7 +12,7 @@ module Oraculo
   )
 where
 
-import Data.Map (Map, elems, fromList, (!))
+import Data.Map (Map, elems, toList, fromList, (!))
 
 -- Definición de tipos
 type Opciones = Map String Oraculo
@@ -90,8 +90,19 @@ respuesta oraculo opcion =
 -- Valor de retorno:
 --   - Nothing si la predicción no pertenece al Oráculo. Just [(String, String)] si la predicción se encuentra,
 --     donde la lista contiene las preguntas y opciones para llegar a la predicción.
-obtenerCadena :: Oraculo -> String -> Maybe [(String, String)]
-obtenerCadena = undefined
+obtenerCadena :: Oraculo -> String ->  Maybe [(String, String)]
+obtenerCadena oraculo pred = listToMaybe $ obtenerCadenaAux oraculo pred []
+
+obtenerCadenaAux :: Oraculo -> String  -> [(String, String)] -> [(String, String)]
+obtenerCadenaAux oraculo pred camino  =
+  case oraculo of
+    Prediccion prediccion' | pred == prediccion'->  camino 
+    Pregunta pregunta opc -> concatMap (\(opcion, oraculo) ->  obtenerCadenaAux oraculo pred( camino ++ [(pregunta, opcion)])) (toList opc)
+    _ -> []
+
+listToMaybe :: [(String, String)] -> Maybe [(String, String)]
+listToMaybe [] = Nothing
+listToMaybe lista = Just lista
 
 -- Función para obtener estadísticas de profundidad de un Oráculo.
 
