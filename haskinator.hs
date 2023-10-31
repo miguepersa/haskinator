@@ -242,6 +242,7 @@ cicloMain oraculo = do
             oraculoCargado <- cargar
             cicloMain oraculoCargado
         "Consultar" -> do
+            consultar oraculo
             cicloMain oraculo
         "Estadisticas" -> do
             estadisticas oraculo
