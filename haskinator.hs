@@ -52,10 +52,14 @@ procesarPregunta oraculo = do
     ans <- getLine
     case map toLower ans of
         "ninguna" -> do
-            putStrLn "xd"
-            return oraculo
+            putStrLn "¿Cuál opción esperabas?"
+            newOp <- getLine
+            putStrLn "¿Cuál es la respuesta correcta?"
+            newAns <- getLine
+            return (addOp oraculo (crearOraculo newAns) newOp)
+
         _ ->
-            if ans `Map.member` (opciones oraculo) then do
+            if ans `Map.member` opciones oraculo then do
                 arb <- predecir (respuesta oraculo ans)
                 return (addOp oraculo arb ans)
             else do
