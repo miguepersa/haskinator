@@ -49,6 +49,6 @@ Esto iniciará la aplicación y te permitirá realizar las siguientes acciones:
 
 ## Integrantes
 
-- Gabriel Chaurio ()
-- Miguel Perez ()
+- Miguel Perez (15-11126)
 - Jose Perez (16-10882)
+- Gabriel Chaurio (17-10126)
